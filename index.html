@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV AgRoss - Real Time</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1a1a1a;
+      color: white;
+    }
+    
+    /* Barra superior com opções */
+    .top-bar {
+      background-color: #fff;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    
+    .top-option {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #000;
+    }
+    
+    .top-option.active {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    
+    .header {
+      background-color: #000;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      height: 50px;
+    }
+    
+    .header-right {
+      color: white;
+      font-size: 14px;
+    }
+    
+    .content {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+    }
+    
+    /* Para mobile: vídeo em cima e notas abaixo */
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column;
+      }
+    }
+    
+    .left-column {
+      flex: 1;
+    }
+    
+    .right-column {
+      flex: 1;
+      border-left: 1px solid #333;
+      padding-left: 20px;
+    }
+    
+    .youtube-container {
+      width: 100%;
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+    }
+    
+    .youtube-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    
+    .note-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+    
+    .note-button {
+      background-color: #fff;
+      color: #000;
+      border: none;
+      border-radius: 15px;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .note-button:hover {
+      background-color: #ddd;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .palpite-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+    
+    .premio-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+    
+    .regras-button {
+      background-color: #ffc107;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+    
+    .divider {
+      height: 1px;
+      background-color: #555;
+      margin: 20px 0;
+    }
+    
+    /* Estilo para seção desativada */
+    .disabled {
+      pointer-events: none;
+      opacity: 0.5;
+      filter: brightness(0.5);
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      color: #000;
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 500px;
+      width: 80%;
+      position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    
+    .notification {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      /* A cor de fundo é definida via JavaScript */
+      color: black;
+      padding: 15px 20px;
+      border-radius: 5px;
+      z-index: 2000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .palpite-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .palpite-input-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .palpite-input {
+      width: 40px;
+      text-align: center;
+      padding: 5px;
+      font-size: 16px;
+    }
+    
+    .team-name {
+      font-weight: bold;
+    }
+    
+    .palpite-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .palpite-submit {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .confirmation-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .confirmation-content {
+      background-color: #fff;
+      color: #000;
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 400px;
+      width: 80%;
+      text-align: center;
+      white-space: pre-line;
+    }
+    
+    .confirmation-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .yes-button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .no-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de seleção de sorteio -->
+  <div class="top-bar">
+    <button id="sorteioNormal" class="top-option active">Sorteio carro toda semana</button>
+    <button id="sorteioCarro" class="top-option">Sorteio carro só última TV do mês</button>
+  </div>
+
+  <div class="header">
+    <img src="tv.png" alt="TV AgRoss Logo" class="logo">
+    <div class="header-right">UNICITRUS COM DE FERTILIZANTES E REP COMERCIAL LTDA</div>
+  </div>
+  
+  <div class="content">
+    <div class="left-column">
+      <div class="youtube-container">
+        <iframe src="https://www.youtube.com/embed/_3R-Lhvm4JE" allowfullscreen></iframe>
+      </div>
+    </div>
+    
+    <div class="right-column">
+      <div class="section-title">Minhas Notas</div>
+      <div>Eu tenho <strong>20</strong> notas.</div>
+      
+      <div class="note-buttons">
+        <button class="note-button note-fiscal">00684</button>
+        <button class="note-button note-fiscal">00842</button>
+        <button class="note-button note-fiscal">00843</button>
+        <button class="note-button note-fiscal">00999</button>
+        <button class="note-button note-fiscal">01000</button>
+        <button class="note-button note-fiscal">01189</button>
+        <button class="note-button note-fiscal">01296</button>
+        <button class="note-button note-fiscal">01297</button>
+        <button class="note-button note-fiscal">01298</button>
+        <button class="note-button note-fiscal">01410</button>
+        <button class="note-button note-fiscal">01412</button>
+        <button class="note-button note-fiscal">01413</button>
+        <button class="note-button note-fiscal">01551</button>
+        <button class="note-button note-fiscal">01552</button>
+        <button class="note-button note-fiscal">01612</button>
+        <button class="note-button note-fiscal">01733</button>
+        <button class="note-button note-fiscal">01915</button>
+        <button class="note-button note-fiscal">01928</button>
+        <button class="note-button note-fiscal">02013</button>
+        <button class="note-button note-fiscal">02058</button>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="palpite-button" id="palpiteBtn">Palpite Premiado</button>
+        <button class="premio-button note-fiscal">Prêmio Extra</button>
+        <button class="regras-button" id="regrasBtn">Regras Programa</button>
+      </div>
+      
+      <div class="divider"></div>
+      
+      <!-- Seção de notas para sorteio com carro -->
+      <div id="sorteioCarroContainer">
+        <div class="section-title" id="sorteioCarroTitle">Notas válidas para o sorteio do Carro</div>
+        <div class="note-buttons">
+          <button class="note-button note-fiscal">03421</button>
+          <button class="note-button note-fiscal">03587</button>
+          <button class="note-button note-fiscal">03692</button>
+          <button class="note-button note-fiscal">03701</button>
+          <button class="note-button note-fiscal">03844</button>
+          <button class="note-button note-fiscal">03912</button>
+          <button class="note-button note-fiscal">04023</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notification popup -->
+  <div class="notification" id="notification">
+    Sua batida foi computada
+  </div>
+  
+  <!-- Palpite Premiado Modal -->
+  <div class="modal" id="palpiteModal">
+    <div class="modal-content">
+      <span class="close-modal" id="closePalpiteModal">&times;</span>
+      <div class="modal-title">
+        Qual é o seu palpite para o jogo do dia 03/04/2025, Corinthians e Palmeiras?
+      </div>
+      <div class="palpite-form">
+        <div class="palpite-input-group">
+          <span class="team-name">Corinthians</span>
+          <input type="text" class="palpite-input" id="corinthiansInput" maxlength="3">
+          <span>X</span>
+          <input type="text" class="palpite-input" id="palmeirasInput" maxlength="3">
+          <span class="team-name">Palmeiras</span>
+        </div>
+        <div class="palpite-buttons">
+          <button class="palpite-submit" id="palpiteSubmit">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Confirmation Modal -->
+  <div class="confirmation-modal" id="confirmationModal">
+    <div class="confirmation-content">
+      <div id="confirmationMessage">Deseja registrar esse palpite?</div>
+      <div class="confirmation-buttons">
+        <button class="yes-button" id="confirmYes">Sim</button>
+        <button class="no-button" id="confirmNo">Não</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Regras do Programa Modal -->
+  <div class="modal" id="regrasModal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeRegrasModal">&times;</span>
+      <div class="modal-title">Regras do Programa</div>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ac nisi ligula. Donec fermentum, urna a tincidunt placerat, mauris arcu elementum felis, et dignissim eros risus a turpis. Mauris suscipit pharetra lorem, vitae commodo risus interdum ac. Integer interdum facilisis nulla, a sollicitudin risus tincidunt nec. Pellentesque at laoreet urna. Mauris semper enim non nisi auctor, a consequat magna cursus. Quisque eget vehicula libero. Nullam varius ante vitae magna hendrerit, vel vulputate nisi iaculis. In ac erat a neque sollicitudin hendrerit. Nulla facilisi. In sed magna ullamcorper, fermentum odio at, hendrerit turpis. Fusce pharetra lectus eu ultrices consectetur. Cras convallis fringilla mauris, id sagittis ligula pulvinar nec. Sed vestibulum felis ac sapien porta, nec tempus lorem bibendum. Proin consectetur, dolor vitae luctus feugiat, ipsum magna placerat nisi, non vehicula lacus sapien ac nunc. Sed nec sem eu dui aliquam molestie.</p>
+      <p>Aliquam erat volutpat. Suspendisse potenti. Curabitur imperdiet elit vitae neque bibendum, eget malesuada quam volutpat. Nullam a nulla nibh. Aliquam erat volutpat. Praesent condimentum odio ut diam gravida, ac ullamcorper turpis ornare. Donec venenatis, sem eget gravida volutpat, turpis ipsum varius quam, vel lobortis leo nulla non ipsum. Nulla facilisi. Duis in ipsum id lorem lobortis malesuada. Sed ultrices, dolor eget vestibulum ullamcorper, mi neque tincidunt dolor, sed porta metus dui non odio. Proin porta tincidunt lacus, vitae tincidunt neque viverra et. Sed a lobortis lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec at ligula in purus viverra tincidunt.</p>
+      <p>Morbi sed odio ut libero fermentum molestie. Vestibulum nec ligula at risus vulputate tincidunt. Mauris sit amet arcu sed turpis fermentum convallis. Etiam tincidunt dolor vel urna ullamcorper, nec faucibus orci semper. Pellentesque pretium velit id eros scelerisque, vitae pretium nisi malesuada. Quisque sagittis dui nec turpis blandit, a placerat justo cursus. Nulla ac risus sed erat scelerisque placerat. Nam nec sem ipsum. Fusce vel tortor sed sapien consectetur feugiat in ac nisi. Donec nec mauris malesuada, tincidunt turpis sit amet, molestie ipsum. Suspendisse at feugiat quam, at faucibus magna. Nulla tincidunt sapien sed justo facilisis, sed malesuada libero tincidunt.</p>
+      <p>Vestibulum malesuada malesuada ante, at pretium justo tincidunt vel. Nam aliquet, mauris nec egestas facilisis, turpis sapien efficitur enim, vel dictum elit justo sit amet arcu. Nam in nunc id risus molestie porta. Vestibulum vehicula ipsum non quam tincidunt, quis malesuada nibh dignissim. Aenean in felis sed arcu hendrerit tincidunt. Praesent tincidunt, tortor quis dictum blandit, quam magna tincidunt lacus, in vulputate magna purus et arcu. Donec vehicula, elit in consequat efficitur, ante nisl placerat nunc, vitae convallis leo leo ut arcu. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras aliquet dignissim lectus ut efficitur. Proin vel felis in nunc dictum tincidunt vitae sit amet elit. Suspendisse potenti.</p>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Elementos dos botões de nota fiscal e notificação
+      const noteFiscalBtns = document.querySelectorAll('.note-fiscal');
+      const notification = document.getElementById('notification');
+      
+      // Elementos dos modais e inputs do palpite
+      const palpiteBtn = document.getElementById('palpiteBtn');
+      const palpiteModal = document.getElementById('palpiteModal');
+      const closePalpiteModal = document.getElementById('closePalpiteModal');
+      const corinthiansInput = document.getElementById('corinthiansInput');
+      const palmeirasInput = document.getElementById('palmeirasInput');
+      const palpiteSubmit = document.getElementById('palpiteSubmit');
+      const confirmationModal = document.getElementById('confirmationModal');
+      const confirmYes = document.getElementById('confirmYes');
+      const confirmNo = document.getElementById('confirmNo');
+      
+      // Elementos do modal de regras
+      const regrasBtn = document.getElementById('regrasBtn');
+      const regrasModal = document.getElementById('regrasModal');
+      const closeRegrasModal = document.getElementById('closeRegrasModal');
+      
+      // Elementos da barra superior para seleção de sorteio
+      const sorteioNormalBtn = document.getElementById('sorteioNormal');
+      const sorteioCarroBtn = document.getElementById('sorteioCarro');
+      const sorteioCarroContainer = document.getElementById('sorteioCarroContainer');
+      const sorteioCarroTitle = document.getElementById('sorteioCarroTitle');
+      
+      // Variável para rastrear se o palpite já foi submetido
+      let palpiteSubmitted = false;
+      
+      // Função para exibir a notificação com fade out e fundo condicional
+      function showNotification(message) {
+        notification.textContent = message;
+        if (message === 'Você já registrou o seu palpite') {
+          notification.style.backgroundColor = '#ffb9b9';
+        } else {
+          notification.style.backgroundColor = '#d1ffc8';
+        }
+        notification.style.display = 'block';
+        notification.style.opacity = 1;
+        
+        setTimeout(() => {
+          let opacity = 1;
+          const fadeInterval = setInterval(() => {
+            if (opacity <= 0) {
+              clearInterval(fadeInterval);
+              notification.style.display = 'none';
+            }
+            notification.style.opacity = opacity;
+            opacity -= 0.1;
+          }, 100);
+        }, 3000);
+      }
+      
+      // Evento de clique para os botões de nota fiscal
+      noteFiscalBtns.forEach(btn => {
+        btn.addEventListener('click', () => showNotification('Sua batida foi computada'));
+      });
+      
+      // Permite apenas números nos inputs de palpite
+      function allowOnlyNumbers(input) {
+        input.addEventListener('input', function() {
+          this.value = this.value.replace(/[^0-9]/g, '');
+        });
+      }
+      allowOnlyNumbers(corinthiansInput);
+      allowOnlyNumbers(palmeirasInput);
+      
+      // Funcionalidade do modal de palpite
+      palpiteBtn.addEventListener('click', function() {
+        if (!palpiteSubmitted) {
+          palpiteModal.style.display = 'flex';
+        } else {
+          showNotification('Você já registrou o seu palpite');
+        }
+      });
+      
+      closePalpiteModal.addEventListener('click', function() {
+        palpiteModal.style.display = 'none';
+      });
+      
+      // Submissão do palpite com mensagem de confirmação modificada
+      palpiteSubmit.addEventListener('click', function() {
+        const corinthiansScore = corinthiansInput.value.trim();
+        const palmeirasScore = palmeirasInput.value.trim();
+        
+        if (!corinthiansScore || !palmeirasScore) {
+          alert('Preencha corretamente os dois palpites');
+          return;
+        }
+        
+        document.getElementById('confirmationMessage').innerHTML =
+          `Deseja registrar esse palpite?<br><span style="font-size: 18px; font-weight: bold;">Corinthians ${corinthiansScore} X ${palmeirasScore} Palmeiras</span><br><br>(Após clicar em Sim, você não poderá alterar ou registrar outro palpite.)`;
+        confirmationModal.style.display = 'flex';
+      });
+      
+      // Confirmação do palpite
+      confirmYes.addEventListener('click', function() {
+        palpiteSubmitted = true;
+        confirmationModal.style.display = 'none';
+        palpiteModal.style.display = 'none';
+        showNotification('Palpite registrado com sucesso!');
+      });
+      
+      confirmNo.addEventListener('click', function() {
+        confirmationModal.style.display = 'none';
+      });
+      
+      // Funcionalidade do modal de regras
+      regrasBtn.addEventListener('click', function() {
+        regrasModal.style.display = 'flex';
+      });
+      
+      closeRegrasModal.addEventListener('click', function() {
+        regrasModal.style.display = 'none';
+      });
+      
+      // Lida com cliques fora dos modais para fechá-los
+      window.addEventListener('click', function(event) {
+        if (event.target === palpiteModal) {
+          palpiteModal.style.display = 'none';
+        } else if (event.target === regrasModal) {
+          regrasModal.style.display = 'none';
+        } else if (event.target === confirmationModal) {
+          confirmationModal.style.display = 'none';
+        }
+      });
+      
+      // Eventos para a barra de seleção de sorteio
+      sorteioNormalBtn.addEventListener('click', function() {
+        sorteioNormalBtn.classList.add('active');
+        sorteioCarroBtn.classList.remove('active');
+        sorteioCarroContainer.classList.remove('disabled');
+        sorteioCarroTitle.textContent = "Notas válidas para o sorteio do Carro";
+      });
+      
+      sorteioCarroBtn.addEventListener('click', function() {
+        sorteioCarroBtn.classList.add('active');
+        sorteioNormalBtn.classList.remove('active');
+        sorteioCarroContainer.classList.add('disabled');
+        sorteioCarroTitle.textContent = "Notas válidas para o sorteio do Carro na última TV BIOAgRoss do mês";
+      });
+    });
+  </script>
+</body>
+</html>
