@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV BIOAgRoss - Player Customizado</title>
+  <style>
+    /* Container do player com overlay para bloquear cliques no vídeo */
+    #player-container {
+      position: relative;
+      width: 100%;
+      max-width: 640px;
+      margin: auto;
+    }
+    #player {
+      width: 100%;
+      height: 360px;
+    }
+    /* Camada transparente sobre o vídeo para desabilitar cliques diretos */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 10;
+    }
+    /* Controles customizados abaixo do player */
+    #custom-controls {
+      text-align: center;
+      margin-top: 10px;
+    }
+    #custom-controls button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Container do player -->
+  <div id="player-container">
+    <div id="player"></div>
+    <!-- Overlay para bloquear cliques diretos no vídeo -->
+    <div class="overlay" id="video-overlay"></div>
+  </div>
+  
+  <!-- Controles customizados -->
+  <div id="custom-controls">
+    <button id="play">Play</button>
+    <button id="pause">Pause</button>
+    <button id="mute">Mute/Unmute</button>
+    <button id="fullscreen">Fullscreen</button>
+  </div>
+  
+  <!-- Carrega a YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    var player;
+    // Função chamada pela API para criar o player
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: '_3R-Lhvm4JE', // Substitua pelo ID do vídeo desejado
+        playerVars: {
+          controls: 0,         // Oculta os controles padrão
+          disablekb: 1,        // Desabilita os controles do teclado
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0
+        },
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+    
+    // Configura os controles customizados quando o player estiver pronto
+    function onPlayerReady(event) {
+      document.getElementById('play').addEventListener('click', function() {
+        player.playVideo();
+      });
+      document.getElementById('pause').addEventListener('click', function() {
+        player.pauseVideo();
+      });
+      document.getElementById('mute').addEventListener('click', function() {
+        if (player.isMuted()) {
+          player.unMute();
+        } else {
+          player.mute();
+        }
+      });
+      document.getElementById('fullscreen').addEventListener('click', function() {
+        var container = document.getElementById('player-container');
+        if (container.requestFullscreen) {
+          container.requestFullscreen();
+        } else if (container.mozRequestFullScreen) { // Firefox
+          container.mozRequestFullScreen();
+        } else if (container.webkitRequestFullscreen) { // Chrome, Safari e Opera
+          container.webkitRequestFullscreen();
+        } else if (container.msRequestFullscreen) { // IE/Edge
+          container.msRequestFullscreen();
+        }
+      });
+    }
+    
+    // Bloqueia cliques no player por meio da camada overlay
+    document.getElementById('video-overlay').addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  </script>
+</body>
+</html>
