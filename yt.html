@@ -75,21 +75,35 @@
       padding-left: 20px;
     }
     
-    .youtube-container {
-      width: 100%;
+    /* Estilos para o player customizado */
+    #player-container {
       position: relative;
-      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-      height: 0;
-      overflow: hidden;
+      width: 100%;
+      max-width: 640px;
+      margin: auto;
     }
-    
-    .youtube-container iframe {
+    #player {
+      width: 100%;
+      height: 360px;
+    }
+    .overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      border: none;
+      background: transparent;
+      z-index: 10;
+    }
+    #custom-controls {
+      text-align: center;
+      margin-top: 10px;
+    }
+    #custom-controls button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
     }
     
     .section-title {
@@ -321,25 +335,17 @@
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
     });
-
     document.onkeydown = function(e) {
-      // F12
-      if (e.keyCode === 123) {
-        e.preventDefault();
-        return false;
-      }
-      // Ctrl+Shift+I e Ctrl+Shift+J
-      if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) {
-        e.preventDefault();
-        return false;
-      }
-      // Ctrl+U
-      if (e.ctrlKey && e.keyCode === 85) {
+      if (e.keyCode === 123 ||
+          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+          (e.ctrlKey && e.keyCode === 85)) {
         e.preventDefault();
         return false;
       }
     };
   </script>
+  <!-- Carrega a YouTube IFrame Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
   <!-- Barra de seleção de sorteio -->
@@ -355,8 +361,16 @@
   
   <div class="content">
     <div class="left-column">
-      <div class="youtube-container">
-        <iframe src="https://www.youtube.com/embed/_3R-Lhvm4JE" allowfullscreen></iframe>
+      <!-- Player customizado com overlay -->
+      <div id="player-container">
+        <div id="player"></div>
+        <div class="overlay" id="video-overlay"></div>
+      </div>
+      <!-- Controles customizados para o vídeo -->
+      <div id="custom-controls">
+        <button id="play">Play</button>
+        <button id="pause">Pause</button>
+        <button id="mute">Mute/Sound</button>
       </div>
     </div>
     
@@ -398,7 +412,6 @@
       <!-- Seção de notas para sorteio com carro -->
       <div id="sorteioCarroContainer">
         <div class="section-title" id="sorteioCarroTitle">Notas válidas para o sorteio do Carro</div>
-        <!-- Adicionando o texto com a contagem de notas -->
         <div>Eu tenho <strong>7</strong> notas.</div>
         <div class="note-buttons">
           <button class="note-button note-fiscal">03421</button>
@@ -414,9 +427,7 @@
   </div>
   
   <!-- Notification popup -->
-  <div class="notification" id="notification">
-    Sua batida foi computada
-  </div>
+  <div class="notification" id="notification">Sua batida foi computada</div>
   
   <!-- Palpite Premiado Modal -->
   <div class="modal" id="palpiteModal">
@@ -465,7 +476,38 @@
     </div>
   </div>
   
+  <!-- Scripts: YouTube IFrame API e demais funcionalidades -->
   <script>
+    var player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: '_3R-Lhvm4JE', // Substitua pelo ID do vídeo desejado
+        playerVars: {
+          controls: 0,         // Oculta os controles padrão
+          disablekb: 1,        // Desabilita os controles do teclado
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0
+        }
+      });
+    }
+    
+    // Controles customizados para o vídeo
+    document.getElementById('play').addEventListener('click', function() {
+      player.playVideo();
+    });
+    document.getElementById('pause').addEventListener('click', function() {
+      player.pauseVideo();
+    });
+    document.getElementById('mute').addEventListener('click', function() {
+      if (player.isMuted()) {
+        player.unMute();
+      } else {
+        player.mute();
+      }
+    });
+    
+    /* --- Resto do código para notas, modais e funcionalidades --- */
     document.addEventListener('DOMContentLoaded', function() {
       // Elementos dos botões de nota fiscal e notificação
       const noteFiscalBtns = document.querySelectorAll('.note-fiscal');
@@ -532,7 +574,7 @@
       noteFiscalBtns.forEach(btn => {
         btn.addEventListener('click', function() {
           if (selectedNote && selectedNote !== btn) {
-            selectedNote.style.backgroundColor = ''; // volta ao padrão definido no CSS
+            selectedNote.style.backgroundColor = ''; // volta ao padrão
           }
           selectedNote = btn;
           btn.style.backgroundColor = 'green';
@@ -572,7 +614,7 @@
           palpiteError.textContent = 'Preencha corretamente os dois palpites';
           return;
         } else {
-          palpiteError.textContent = ''; // Limpa a mensagem se os dados estiverem preenchidos
+          palpiteError.textContent = '';
         }
         
         document.getElementById('confirmationMessage').innerHTML =
@@ -601,7 +643,7 @@
         regrasModal.style.display = 'none';
       });
       
-      // Lida com cliques fora dos modais para fechá-los
+      // Fechar modais ao clicar fora
       window.addEventListener('click', function(event) {
         if (event.target === palpiteModal) {
           palpiteModal.style.display = 'none';
