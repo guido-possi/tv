@@ -12,7 +12,6 @@
       background-color: #1a1a1a;
       color: white;
     }
-    
     /* Barra superior com opções */
     .top-bar {
       background-color: #fff;
@@ -21,7 +20,6 @@
       justify-content: center;
       gap: 20px;
     }
-    
     .top-option {
       background: none;
       border: none;
@@ -29,12 +27,10 @@
       cursor: pointer;
       color: #000;
     }
-    
     .top-option.active {
       font-weight: bold;
       text-decoration: underline;
     }
-    
     .header {
       background-color: #000;
       padding: 10px 20px;
@@ -42,50 +38,36 @@
       justify-content: space-between;
       align-items: center;
     }
-    
     .logo {
       height: 50px;
     }
-    
     .header-right {
       color: white;
       font-size: 14px;
     }
-    
     .content {
       display: flex;
       padding: 20px;
       gap: 20px;
     }
-    
     /* Para mobile: vídeo em cima e notas abaixo */
     @media (max-width: 768px) {
-      .content {
-        flex-direction: column;
-      }
+      .content { flex-direction: column; }
     }
-    
-    .left-column {
-      flex: 1;
-    }
-    
+    .left-column { flex: 1; }
     .right-column {
       flex: 1;
       border-left: 1px solid #333;
       padding-left: 20px;
     }
-    
-    /* Estilos para o player customizado */
+    /* Player customizado */
     #player-container {
       position: relative;
       width: 100%;
       max-width: 640px;
       margin: auto;
     }
-    #player {
-      width: 100%;
-      height: 360px;
-    }
+    #player { width: 100%; height: 360px; }
     .overlay {
       position: absolute;
       top: 0;
@@ -95,6 +77,7 @@
       background: transparent;
       z-index: 10;
     }
+    /* Controles customizados para o player */
     #custom-controls {
       text-align: center;
       margin-top: 10px;
@@ -105,19 +88,16 @@
       font-size: 14px;
       cursor: pointer;
     }
-    
     .section-title {
       font-size: 20px;
       margin-bottom: 15px;
     }
-    
     .note-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
       margin-bottom: 20px;
     }
-    
     .note-button {
       background-color: #fff;
       color: #000;
@@ -128,17 +108,12 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-    
-    .note-button:hover {
-      background-color: #ddd;
-    }
-    
+    .note-button:hover { background-color: #ddd; }
     .action-buttons {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
     }
-    
     .palpite-button {
       background-color: #007bff;
       color: white;
@@ -147,7 +122,6 @@
       padding: 8px 15px;
       cursor: pointer;
     }
-    
     .premio-button {
       background-color: #dc3545;
       color: white;
@@ -156,7 +130,6 @@
       padding: 8px 15px;
       cursor: pointer;
     }
-    
     .regras-button {
       background-color: #ffc107;
       color: black;
@@ -165,34 +138,22 @@
       padding: 8px 15px;
       cursor: pointer;
     }
-    
     .divider {
       height: 1px;
       background-color: #555;
       margin: 20px 0;
     }
-    
-    /* Estilo para seção desativada */
-    .disabled {
-      pointer-events: none;
-      opacity: 0.5;
-      filter: brightness(0.5);
-    }
-    
     /* Modal styles */
     .modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.7);
       z-index: 1000;
       justify-content: center;
       align-items: center;
     }
-    
     .modal-content {
       background-color: #fff;
       color: #000;
@@ -204,66 +165,52 @@
       max-height: 80vh;
       overflow-y: auto;
     }
-    
     .modal-title {
       font-size: 18px;
       margin-bottom: 15px;
       font-weight: bold;
     }
-    
     .close-modal {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 10px; right: 10px;
       cursor: pointer;
       font-size: 20px;
     }
-    
     .notification {
       display: none;
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      /* A cor de fundo é definida via JavaScript */
       color: black;
       padding: 15px 20px;
       border-radius: 5px;
       z-index: 2000;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
-    
     .palpite-form {
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
-    
     .palpite-input-group {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
     }
-    
     .palpite-input {
       width: 40px;
       text-align: center;
       padding: 5px;
       font-size: 16px;
     }
-    
-    .team-name {
-      font-weight: bold;
-    }
-    
+    .team-name { font-weight: bold; }
     .palpite-buttons {
       display: flex;
       justify-content: center;
       gap: 10px;
       margin-top: 10px;
     }
-    
     .palpite-submit {
       background-color: #28a745;
       color: white;
@@ -272,20 +219,16 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    
     .confirmation-modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.7);
       z-index: 2000;
       justify-content: center;
       align-items: center;
     }
-    
     .confirmation-content {
       background-color: #fff;
       color: #000;
@@ -296,14 +239,12 @@
       text-align: center;
       white-space: pre-line;
     }
-    
     .confirmation-buttons {
       display: flex;
       justify-content: center;
       gap: 10px;
       margin-top: 15px;
     }
-    
     .yes-button {
       background-color: #28a745;
       color: white;
@@ -312,7 +253,6 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    
     .no-button {
       background-color: #dc3545;
       color: white;
@@ -321,8 +261,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    
-    /* Estilo para mensagem de erro na submissão do palpite */
+    /* Erro de palpite */
     .error-message {
       color: red;
       font-size: 12px;
@@ -330,7 +269,7 @@
     }
   </style>
   
-  <!-- Script para desabilitar clique direito e teclas que abrem as ferramentas de desenvolvimento -->
+  <!-- Bloqueia clique com botão direito e teclas para desenvolvedor -->
   <script>
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
@@ -344,6 +283,7 @@
       }
     };
   </script>
+  
   <!-- Carrega a YouTube IFrame Player API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -366,7 +306,7 @@
         <div id="player"></div>
         <div class="overlay" id="video-overlay"></div>
       </div>
-      <!-- Controles customizados para o vídeo -->
+      <!-- Controles customizados abaixo do player -->
       <div id="custom-controls">
         <button id="play">Play</button>
         <button id="pause">Pause</button>
@@ -379,6 +319,7 @@
       <div>Eu tenho <strong>20</strong> notas.</div>
       
       <div class="note-buttons">
+        <!-- Botões de notas (exemplo) -->
         <button class="note-button note-fiscal">00684</button>
         <button class="note-button note-fiscal">00842</button>
         <button class="note-button note-fiscal">00843</button>
@@ -476,25 +417,32 @@
     </div>
   </div>
   
-  <!-- Scripts: YouTube IFrame API e demais funcionalidades -->
   <script>
     var player;
+    // Função chamada pela YouTube IFrame API para criar o player
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
-        videoId: '_3R-Lhvm4JE', // Substitua pelo ID do vídeo desejado
+        videoId: 'jRY0kSgPABw', // ID do vídeo que você deseja usar
         playerVars: {
-          controls: 0,         // Oculta os controles padrão
-          disablekb: 1,        // Desabilita os controles do teclado
+          controls: 0,         // Oculta controles padrão
+          disablekb: 1,        // Desabilita controle via teclado
           modestbranding: 1,
           rel: 0,
-          showinfo: 0
+          showinfo: 0,
+          autoplay: 0,
+          liveui: 1            // Exibe interface de live (se aplicável)
         }
       });
     }
     
-    // Controles customizados para o vídeo
+    // Controles customizados para o player
     document.getElementById('play').addEventListener('click', function() {
       player.playVideo();
+      // Após um breve delay, força o player a buscar a live edge
+      setTimeout(function() {
+        var liveEdge = player.getDuration(); 
+        player.seekTo(liveEdge, true);
+      }, 500);
     });
     document.getElementById('pause').addEventListener('click', function() {
       player.pauseVideo();
@@ -507,7 +455,7 @@
       }
     });
     
-    /* --- Resto do código para notas, modais e funcionalidades --- */
+    // Demais funcionalidades da página
     document.addEventListener('DOMContentLoaded', function() {
       // Elementos dos botões de nota fiscal e notificação
       const noteFiscalBtns = document.querySelectorAll('.note-fiscal');
@@ -574,7 +522,7 @@
       noteFiscalBtns.forEach(btn => {
         btn.addEventListener('click', function() {
           if (selectedNote && selectedNote !== btn) {
-            selectedNote.style.backgroundColor = ''; // volta ao padrão
+            selectedNote.style.backgroundColor = ''; // volta à cor padrão
           }
           selectedNote = btn;
           btn.style.backgroundColor = 'green';
@@ -609,7 +557,6 @@
         const corinthiansScore = corinthiansInput.value.trim();
         const palmeirasScore = palmeirasInput.value.trim();
         
-        // Se os campos não estiverem preenchidos, exibe a mensagem de erro dentro da caixa
         if (!corinthiansScore || !palmeirasScore) {
           palpiteError.textContent = 'Preencha corretamente os dois palpites';
           return;
