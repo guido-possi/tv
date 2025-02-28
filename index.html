@@ -366,6 +366,8 @@
       <!-- Seção de notas para sorteio com carro -->
       <div id="sorteioCarroContainer">
         <div class="section-title" id="sorteioCarroTitle">Notas válidas para o sorteio do Carro</div>
+        <!-- Adicionando o texto com a contagem de notas -->
+        <div>Eu tenho <strong>7</strong> notas.</div>
         <div class="note-buttons">
           <button class="note-button note-fiscal">03421</button>
           <button class="note-button note-fiscal">03587</button>
@@ -451,7 +453,7 @@
       const regrasModal = document.getElementById('regrasModal');
       const closeRegrasModal = document.getElementById('closeRegrasModal');
       
-      // Elementos da barra superior para seleção de sorteio
+      // Elementos da barra de seleção de sorteio
       const sorteioNormalBtn = document.getElementById('sorteioNormal');
       const sorteioCarroBtn = document.getElementById('sorteioCarro');
       const sorteioCarroContainer = document.getElementById('sorteioCarroContainer');
@@ -471,6 +473,7 @@
         notification.style.display = 'block';
         notification.style.opacity = 1;
         
+        // Exibir a mensagem por 2,5 segundos (2500 ms)
         setTimeout(() => {
           let opacity = 1;
           const fadeInterval = setInterval(() => {
@@ -481,12 +484,16 @@
             notification.style.opacity = opacity;
             opacity -= 0.1;
           }, 100);
-        }, 3000);
+        }, 2500);
       }
       
-      // Evento de clique para os botões de nota fiscal
+      // Evento de clique para os botões de nota fiscal:
+      // Ao clicar, a nota muda para verde e exibe a notificação.
       noteFiscalBtns.forEach(btn => {
-        btn.addEventListener('click', () => showNotification('Sua batida foi computada'));
+        btn.addEventListener('click', () => {
+          btn.style.backgroundColor = 'green';
+          showNotification('Sua batida foi computada');
+        });
       });
       
       // Permite apenas números nos inputs de palpite
