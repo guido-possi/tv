@@ -307,6 +307,13 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    
+    /* Estilo para mensagem de erro na submissão do palpite */
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -401,6 +408,8 @@
           <input type="text" class="palpite-input" id="palmeirasInput" maxlength="3">
           <span class="team-name">Palmeiras</span>
         </div>
+        <!-- Caixa de mensagem de erro -->
+        <div id="palpiteError" class="error-message"></div>
         <div class="palpite-buttons">
           <button class="palpite-submit" id="palpiteSubmit">Enviar</button>
         </div>
@@ -451,6 +460,9 @@
       const confirmYes = document.getElementById('confirmYes');
       const confirmNo = document.getElementById('confirmNo');
       
+      // Caixa de mensagem de erro na submissão do palpite
+      const palpiteError = document.getElementById('palpiteError');
+      
       // Elementos do modal de regras
       const regrasBtn = document.getElementById('regrasBtn');
       const regrasModal = document.getElementById('regrasModal');
@@ -495,7 +507,7 @@
       noteFiscalBtns.forEach(btn => {
         btn.addEventListener('click', function() {
           if (selectedNote && selectedNote !== btn) {
-            selectedNote.style.backgroundColor = ''; // volta ao padrão (#fff definido no CSS)
+            selectedNote.style.backgroundColor = ''; // volta ao padrão definido no CSS
           }
           selectedNote = btn;
           btn.style.backgroundColor = 'green';
@@ -530,9 +542,12 @@
         const corinthiansScore = corinthiansInput.value.trim();
         const palmeirasScore = palmeirasInput.value.trim();
         
+        // Se os campos não estiverem preenchidos, exibe a mensagem de erro dentro da caixa
         if (!corinthiansScore || !palmeirasScore) {
-          alert('Preencha corretamente os dois palpites');
+          palpiteError.textContent = 'Preencha corretamente os dois palpites';
           return;
+        } else {
+          palpiteError.textContent = ''; // Limpa a mensagem se os dados estiverem preenchidos
         }
         
         document.getElementById('confirmationMessage').innerHTML =
