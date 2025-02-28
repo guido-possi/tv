@@ -437,6 +437,9 @@
       const noteFiscalBtns = document.querySelectorAll('.note-fiscal');
       const notification = document.getElementById('notification');
       
+      // Variável para armazenar a nota atualmente selecionada
+      let selectedNote = null;
+      
       // Elementos dos modais e inputs do palpite
       const palpiteBtn = document.getElementById('palpiteBtn');
       const palpiteModal = document.getElementById('palpiteModal');
@@ -488,9 +491,13 @@
       }
       
       // Evento de clique para os botões de nota fiscal:
-      // Ao clicar, a nota muda para verde e exibe a notificação.
+      // Ao clicar, a nota selecionada fica verde e as demais voltam à cor original.
       noteFiscalBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', function() {
+          if (selectedNote && selectedNote !== btn) {
+            selectedNote.style.backgroundColor = ''; // volta ao padrão (#fff definido no CSS)
+          }
+          selectedNote = btn;
           btn.style.backgroundColor = 'green';
           showNotification('Sua batida foi computada');
         });
